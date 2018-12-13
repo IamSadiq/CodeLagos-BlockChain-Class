@@ -39,7 +39,7 @@ contract Wrestling {
     * A second wrestler can register as an opponent
     */
     function registerAsAnOpponent() public {
-        require(wrestler2 == address(0));
+        require(wrestler2 == address(0), "wrestler2 shouldn't have an active valid address");
 
         wrestler2 = msg.sender;
 
@@ -51,14 +51,14 @@ contract Wrestling {
     * more the money (in total) than the other did, the first wins
     */
     function wrestle() public payable {
-        require(!gameFinished && (msg.sender == wrestler1 || msg.sender == wrestler2));
+        require(!gameFinished && (msg.sender == wrestler1 || msg.sender == wrestler2), "Game must be ongoing and only wrester1 or wrester2 can call this function");
 
         if(msg.sender == wrestler1) {
-            require(wrestler1Played == false);
+            require(wrestler1Played == false, "wrestler1 should not play twice in a row");
             wrestler1Played = true;
             wrestler1Deposit = wrestler1Deposit + msg.value;
     	} else {
-            require(wrestler2Played == false);
+            require(wrestler2Played == false, "wrestler2 should not play twice in a row");
             wrestler2Played = true;
             wrestler2Deposit = wrestler2Deposit + msg.value;
     	}
@@ -93,7 +93,7 @@ contract Wrestling {
     * http://solidity.readthedocs.io/en/develop/common-patterns.html#withdrawal-from-contracts
     */
     function withdraw() public {
-        require(gameFinished && theWinner == msg.sender);
+        require(gameFinished && theWinner == msg.sender, "Game should be finished and winner announced");
 
         uint amount = gains;
 
